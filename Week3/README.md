@@ -1,103 +1,179 @@
 # Week 3: Cloud Compute & The HuggingFace Ecosystem
 
 ## Overview
-Week 3 transitions from using pre-built APIs to leveraging **cloud GPU compute** and working directly with **open-source models** through HuggingFace. Students gain hands-on experience running transformer models on powerful hardware (Google Colab T4 GPUs) and learn the high-level APIs that make deploying models accessible. This week emphasizes building production-ready applications with state-of-the-art open-source models.
+Week 3 transitions from API-based models to direct model access and cloud GPU computing. Students learn to use Google Colab for free GPU access, authenticate with HuggingFace, understand tokenization, work with transformer models, and build real-world applications like audio transcription and meeting minutes generation.
 
 ## Key Learning Outcomes
-- Set up and use Google Colab for free GPU computing
-- Connect to HuggingFace Hub and authenticate securely
-- Use HuggingFace Pipelines for inference tasks
-- Understand transformer model architecture at a practical level
-- Optimize model inference for speed and memory
-- Deploy models on cloud GPUs
+- Set up Google Colab and connect to T4/A100 GPUs
+- Authenticate securely with HuggingFace Hub
+- Understand tokenization and token prediction
+- Load and run transformer models with quantization
+- Work with multiple model architectures (Llama, Phi, Gemma, Qwen, DeepSeek)
+- Process audio and generate structured outputs
+- Optimize inference for memory and speed
 
 ---
 
 ## Day-by-Day Breakdown
 
-### **Day 1: Google Colab & GPU Fundamentals**
+### **Day 1: Google Colab & Generative Models**
 **File:** `day1.ipynb`
 
-**Content Summary:**
-This notebook introduces **Google Colab**, a free cloud Jupyter environment with GPU access. Rather than running models locally (which requires expensive hardware), students learn to leverage Google's infrastructure for model experimentation.
+**Topics:**
+- Google Colab setup and runtime management
+- Connecting to free T4 GPUs and paid A100 GPUs
+- HuggingFace authentication with secure tokens
+- Image generation with Stable Diffusion (SDXL, Turbo, Refiner)
+- Text-to-speech synthesis
+- FLUX.1 model demonstration
+- Cost estimation for cloud GPU usage
 
 **Key Concepts:**
+- Free T4 tier limitations and reset behavior
+- HuggingFace token management (Write permissions required)
+- Model pipeline usage with diffusers library
+- Paid tier benefits and pricing ($9.99 = 100 compute units)
+- Kernel management (restart vs. disconnect + delete)
 
-**What is Google Colab?**
-- Browser-based Jupyter notebook running on Google's servers
-- **Free tier**: Access to T4 GPUs (compute power equivalent to $500+ GPUs)
-- Automatic package management (pip installs)
-- Shareable links for collaboration
-- Runtime resets if idle (prevent GPU hogging)
-
-**Colab Survival Guide:**
-1. **Connect to GPU**: Top-right dropdown → "Connect to hosted runtime" → Select T4
-2. **Verify GPU**: Run `!nvidia-smi` to confirm T4 available
-3. **Monitor Resources**: View resources menu to watch memory usage
-4. **Handle Disconnects**: Runtime can reset; always run installs from top
-
-**Key Logic & Implementations:**
-
-**GPU Detection:**
-```python
-!pip install transformers==4.56.2 diffusers==0.32.2
-
-!nvidia-smi  # Verify Tesla T4 GPU
-```
-
-**HuggingFace Authentication:**
-- Create free account at `https://huggingface.co`
-- Generate "Write" access token with full permissions
-- Store securely in Colab Secrets (not in code)
-- Use `userdata.get('HF_TOKEN')` to retrieve safely
-
-**Primary Learning Outcomes:**
-- Cloud GPU infrastructure for ML work
-- Secure credential management in cloud environments
-- Handling session resets and runtime management
-- Leveraging free tier GPU compute
-
-**Technologies Used:** Google Colab, nvidia-smi, HuggingFace authentication
+**Technologies:** Google Colab, NVIDIA GPUs, HuggingFace, Diffusers, Stable Diffusion, FLUX.1
 
 ---
 
 ### **Day 2: HuggingFace Pipelines & Transformers**
 **File:** `day2.ipynb`
 
-**Content Summary:**
-HuggingFace Transformers library provides **high-level APIs** (Pipelines) that abstract away complexity. Rather than manually loading models, tokenizing, and managing tensors, pipelines let students write simple code like:
+**Topics:**
+- HuggingFace Pipelines abstraction layer
+- Common inference tasks (sentiment analysis, NER, QA, text generation, translation, summarization)
+- Pipeline architecture (tokenizer → model → post-processor)
+- Model selection strategies
+- Streaming responses and optimization
 
-```python
-classifier = pipeline("text-classification")
-result = classifier("I love this!")  # Returns: [{'label': 'POSITIVE', 'score': 0.99}]
-```
+**Key Concepts:**
+- Pipelines simplify model usage to single function calls
+- Understanding pipeline flow: text → tokens → embeddings → predictions → results
+- Selecting appropriate models for specific tasks
+- Managing inference on limited hardware
 
-**What is a Pipeline?**
-A Pipeline is an abstraction that wraps:
-1. **Tokenizer**: Text → Token IDs
-2. **Model**: Token IDs → Predictions
-3. **Post-processor**: Raw outputs → Human-readable results
+**Technologies:** HuggingFace Transformers, Pipelines, PyTorch
 
-All bundled into a single function call.
+---
 
-**Key Logic & Implementations:**
+### **Day 3: Tokenizers & Token Prediction**
+**File:** `day3.ipynb` and `day5_visualizetokens.ipynb`
 
-**Common Pipeline Tasks:**
-```python
-# Text Classification
-sentiment = pipeline("sentiment-analysis")
-sentiment("This is great!")  # → POSITIVE
+**Topics:**
+- Understanding tokenization process
+- Character, word, and token counting
+- Chat templates and instruct model formats
+- Comparing tokenizers across different models
+- Token ID conversion
+- Model-specific prompt formatting
 
-# Named Entity Recognition (NER)
-ner = pipeline("ner")
-ner("John Smith works at OpenAI")  # → ['PERSON', 'ORG']
+**Key Concepts:**
+- Tokenizers break text into sub-word tokens
+- Different models use different tokenization schemes
+- Chat templates standardize message formatting for instruction-tuned models
+- Message structure conversion: Python dicts → formatted text → tokens → token IDs
+- Token efficiency varies by model architecture
 
-# Question Answering
-qa = pipeline("question-answering")
-qa(question="Where do I work?", context="I work at OpenAI")
+**Models Analyzed:**
+- Meta-Llama-3.1 (8B and 1B variants)
+- Microsoft Phi-4
+- DeepSeek-V3.1
+- Qwen2.5-Coder-7B
 
-# Text Generation
-generator = pipeline("text-generation")
+**Technologies:** AutoTokenizer, HuggingFace Transformers
+
+---
+
+### **Day 4: Models & Transformer Architecture**
+**File:** `Day4.ipynb`
+
+**Topics:**
+- Loading models with BitsAndBytes quantization
+- Understanding Transformer neural network architecture
+- Model inference with streaming output
+- Memory optimization and garbage collection
+- Comparing multiple models side-by-side
+- Quantization configuration (4-bit, bfloat16)
+
+**Key Concepts:**
+- Quantization reduces memory footprint while maintaining performance
+- Transformer architecture: embedding layers → decoder blocks → attention → MLPs → output
+- Model streaming enables token-by-token output display
+- Memory management critical for resource-constrained environments
+- Generation parameters (max_tokens, temperature, top_p)
+
+**Models Tested:**
+- Meta-Llama-3.1-8B-Instruct
+- Microsoft Phi-4-mini-instruct
+- Google Gemma-3-270m-it
+- Qwen3-4B-Instruct
+- DeepSeek-R1-Distill-Qwen-1.5B
+
+**Technologies:** AutoModelForCausalLM, BitsAndBytes, TextStreamer, PyTorch quantization
+
+---
+
+### **Day 5: Audio Processing & Real-World Applications**
+**File:** `day5.ipynb`
+
+**Topics:**
+- Audio transcription (Whisper vs. OpenAI API)
+- LLM-based text analysis and structuring
+- Meeting minutes generation with action items
+- Google Drive integration
+- End-to-end workflow: audio → transcription → analysis → structured output
+
+**Key Concepts:**
+- Speech-to-text models (Whisper-medium) can run locally on GPUs
+- OpenAI transcription API for comparison
+- Streaming model output for real-time response display
+- System prompts for structured output generation
+- Long-context processing with large token limits
+
+**Project Workflow:**
+1. Load audio file from Google Drive
+2. Transcribe using Whisper or OpenAI
+3. Analyze transcript with Llama 3.2
+4. Generate meeting minutes with attendees, discussion points, and action items
+5. Display formatted markdown output
+
+**Technologies:** Speech2Text Whisper, OpenAI API, Llama, Google Drive integration
+
+---
+
+## Tech Stack Summary
+
+**Cloud Infrastructure:**
+- Google Colab (CPU, T4 GPU, A100 GPU)
+- Google Drive storage integration
+
+**Model Libraries:**
+- HuggingFace Transformers (loading and inference)
+- Diffusers (image generation)
+- BitsAndBytes (quantization)
+
+**Models Covered:**
+- **Text Generation**: Llama 3.1/3.2, Phi-4, DeepSeek, Qwen
+- **Image Generation**: Stable Diffusion XL, FLUX.1
+- **Speech**: Whisper (transcription), SpeechT5 (synthesis)
+- **Vision**: Through pipelines for multi-modal tasks
+
+**Key Features:**
+- 4-bit quantization for memory efficiency
+- Streaming outputs for interactive responses
+- Chat templates for instruction-tuned models
+- GPU memory optimization with garbage collection
+
+---
+
+## Project Outputs
+
+- **Generative Models**: Images created with SDXL and FLUX.1
+- **Speech Synthesis**: AI-generated voices using SpeechT5
+- **Meeting Minutes**: Structured documents with action items from audio transcriptions
 generator("Once upon a time")  # → Continues story
 
 # Zero-shot Classification
