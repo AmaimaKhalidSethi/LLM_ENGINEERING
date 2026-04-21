@@ -1,8 +1,8 @@
 # LLM Engineering: Mastering Generative AI, RAG, LoRA, and AI Agents
 
-A comprehensive 3-week course covering the full spectrum of LLM engineering, from API integration to cloud-based model deployment and fine-tuning.
+A comprehensive 8-week course covering the full spectrum of LLM engineering, from API integration to cloud-based model deployment and fine-tuning.
 
-## 📚 Course Overview
+## 📚 Course Overview (till -now)
 
 This course is structured as a progressive learning path, building from foundational concepts to advanced production-ready systems:
 
