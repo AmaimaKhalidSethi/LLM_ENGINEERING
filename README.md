@@ -1,103 +1,91 @@
-# LLM Engineering: Mastering Generative AI, RAG, LoRA, and AI Agents
+# LLM Engineering: Mastering Generative AI
 
-A comprehensive 8-week course covering the full spectrum of LLM engineering, from API integration to cloud-based model deployment and fine-tuning.
+A comprehensive course covering LLM fundamentals, API integration, multi-model systems, cloud compute, and production deployment.
 
-## 📚 Course Overview (till -now)
+## 📚 Course Overview
 
-This course is structured as a progressive learning path, building from foundational concepts to advanced production-ready systems:
-
-| Week | Focus | Key Skills | 
-|------|-------|-----------|
-| **Week 1** | LLM Fundamentals & API Integration | Multi-provider APIs, tokenization, web scraping, prompt engineering |
-| **Week 2** | Multi-Model Systems & Interactive UIs | Provider selection, Gradio applications, stateful chatbots |
-| **Week 3** | Cloud Compute & Open-Source Models | Google Colab GPUs, HuggingFace, transformers, inference optimization |
+| Week | Focus | Key Skills | Files |
+|------|-------|-----------|-------|
+| **Week 1** | LLM Fundamentals & APIs | Multi-provider APIs, tokenization, web scraping, prompt engineering | [Details](./week1/README.md) |
+| **Week 2** | Multi-Model Systems & UIs | Provider selection, Gradio apps, stateful chatbots | [Details](./week2/README.md) |
+| **Week 3** | Cloud Compute & Open-Source | Google Colab, HuggingFace, transformers, audio processing | [Details](./week3/README.md) |
 
 ---
 
-## 📋 Table of Contents
+## 🚀 Quick Start
 
-### **[Week 1: Foundations of LLM Integration](./week1/README.md)**
+Each week contains daily notebooks structured as follows:
 
-Learn the fundamentals of working with Large Language Models through APIs.
+- **Day 1-4**: Core concepts and hands-on implementation
+- **Day 5**: Capstone project integrating week's topics
+- **Extra notebooks**: Advanced topics and alternative approaches
 
-**Topics Covered:**
-- Comparing LLM providers (cloud vs. local)
-- OpenAI SDK for unified API access
-- Web scraping and content processing
-- Tokenization and prompt engineering
-- Streaming responses
-- End-to-end automation projects
+### Prerequisites
+- Basic Python knowledge
+- API keys for: OpenAI, HuggingFace (free), Google Colab (free)
+- No GPU required initially (Weeks 1-2); GPU needed for Week 3
 
-**Hands-On Projects:**
-1. **Provider Comparison**: Evaluate Gemini (cloud) vs. Ollama (local)
-2. **Web Content Extraction**: Scrape and summarize websites
-3. **Conversation Memory**: Implement multi-turn dialogues
-4. **Automated Brochure Generator**: Full pipeline combining all concepts
-
-**Technologies:** OpenAI SDK, Ollama, BeautifulSoup, Groq, Gemini
-
-[→ Read Week 1 Documentation](./week1/README.md)
+### How to Use
+1. Navigate to the week folder
+2. Read the README for that week
+3. Run notebooks in order (Day 1 → Day 5)
+4. Refer to detailed documentation in each week's README
 
 ---
 
-### **[Week 2: Multi-Model Integration & Interactive Applications](./week2/README.md)**
+## 📖 Week Summaries
 
-Build scalable systems that leverage multiple LLM providers and create interactive web interfaces.
+### Week 1: LLM Fundamentals & API Integration
+Learn to work with multiple LLM providers (OpenAI, Groq, Gemini, Ollama) through unified APIs. Build projects including web scrapers, content summarizers, and automated pipelines.
 
-**Topics Covered:**
-- Connecting to multiple frontier models (OpenAI, Groq, Gemini, DeepSeek, etc.)
-- Building interfaces with Gradio
-- Stateful chatbot applications
-- Model selection strategies
-- Training-time vs. inference-time scaling
-- Production deployment patterns
-
-**Hands-On Projects:**
-1. **Multi-Provider Setup**: Connect to 6+ different LLM APIs
-2. **Gradio UI Development**: Build interactive model demos
-3. **Chatbot System**: Create memory-persistent conversational AI
-4. **Model Comparison**: Evaluate different providers on same task
-
-**Technologies:** Gradio, OpenAI SDK, Groq, Gemini, DeepSeek, OpenRouter
-
-[→ Read Week 2 Documentation](./week2/README.md)
+**Key Topics:** SDK setup, tokenization, prompt engineering, streaming, web scraping
 
 ---
 
-### **[Week 3: Cloud Compute & Open-Source Models](./week3/README.md)**
+### Week 2: Multi-Model Integration & Interactive Applications  
+Connect to multiple frontier models and build interactive Gradio web interfaces. Explore stateful chatbots, model selection strategies, and deployment patterns.
 
-Move beyond APIs to direct model access and cloud GPU computing.
-
-**Topics Covered:**
-- Google Colab setup and GPU management
-- HuggingFace Hub integration
-- Transformers and Pipelines
-- Model selection and fine-tuning strategies
-- Inference optimization
-- Production deployment on cloud GPUs
-
-**Hands-On Projects:**
-1. **Colab GPU Setup**: Run models on free T4 GPUs
-2. **HuggingFace Authentication**: Secure API token management
-3. **Pipeline Applications**: Use high-level model APIs
-4. **Advanced Inference**: Optimize model performance
-
-**Technologies:** Google Colab, HuggingFace, Transformers, PyTorch, NVIDIA GPUs
-
-[→ Read Week 3 Documentation](./week3/README.md)
+**Key Topics:** Gradio UI, multi-provider setups, chatbot memory, model evaluation
 
 ---
 
-## 🎯 Learning Path
+### Week 3: Cloud Compute & Open-Source Models
+Use free Google Colab GPUs to run transformer models directly from HuggingFace. Process audio, generate images, and build real-world applications with quantized models.
+
+**Key Topics:** Google Colab, GPU management, HuggingFace authentication, tokenizers, model inference, audio processing
+
+---
+
+## 🛠️ Technologies Used
+
+**Models & Frameworks:**
+- HuggingFace Transformers, Diffusers
+- OpenAI, Groq, Gemini, DeepSeek APIs
+- Ollama (local models)
+- PyTorch, Llama, Phi, DeepSeek models
+
+**Infrastructure:**
+- Google Colab (free T4 GPUs)
+- Gradio (web UIs)
+- BeautifulSoup (web scraping)
+
+**Cloud & Deployment:**
+- Google Drive integration
+- Model quantization (BitsAndBytes)
+
+---
+
+## 📁 Project Structure
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│ WEEK 1: Foundations                                     │
-├─────────────────────────────────────────────────────────┤
-│ ✓ API Setup & Authentication                            │
-│ ✓ OpenAI SDK for multiple providers                     │
-│ ✓ Tokenization & token counting                         │
-│ ✓ Prompt engineering patterns                           │
+LLM_ENGINEERING/
+├── week1/          # API fundamentals & automation
+├── week2/          # Multi-model & Gradio UIs
+├── week3/          # Cloud GPUs & transformers
+└── README.md       # This file
+```
+
+Each week includes a dedicated README with detailed breakdowns of daily content and learning outcomes.
 │ ✓ Web scraping & content processing                     │
 │ ✓ Streaming responses                                   │
 │ ✓ System prompts & message history                      │
