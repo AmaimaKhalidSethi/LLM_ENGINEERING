@@ -47,7 +47,6 @@ def _os_block():
 
     distro = {"name": "", "version": ""}
     if sysname == "Linux":
-        # Best-effort parse of /etc/os-release
         try:
             with open("/etc/os-release", "r") as f:
                 data = {}
@@ -60,7 +59,6 @@ def _os_block():
         except Exception:
             pass
 
-    # WSL / Rosetta detection (harmless if not present)
     wsl = False
     if sysname != "Windows":
         try:
@@ -74,7 +72,6 @@ def _os_block():
     if sysname == "Darwin":
         rosetta = _bool_from_output(_run(["sysctl", "-in", "sysctl.proc_translated"]))
 
-    # Target triple (best effort)
     target = ""
     for cc in ("clang", "gcc"):
         if _which(cc):
@@ -125,7 +122,6 @@ def _package_managers():
 def _cpu_block():
     sysname = platform.system()
     brand = ""
-    # A simple brand/model read per OS; ignore failures
     if sysname == "Linux":
         brand = _run("grep -m1 'model name' /proc/cpuinfo | cut -d: -f2").strip()
     elif sysname == "Darwin":
@@ -135,7 +131,6 @@ def _cpu_block():
         if not brand:
             brand = _run("wmic cpu get Name /value").replace("Name=", "").strip()
 
-    # Logical cores always available; physical is best-effort
     cores_logical = os.cpu_count() or 0
     cores_physical = 0
     if sysname == "Darwin":
@@ -146,16 +141,13 @@ def _cpu_block():
             or "0"
         )
     elif sysname == "Linux":
-        # This is a quick approximation; fine for our use (parallel -j suggestions)
         try:
-            # Count unique "core id" per physical id
             mapping = _run("LC_ALL=C lscpu -p=CORE,SOCKET | grep -v '^#'").splitlines()
             unique = set(tuple(line.split(",")) for line in mapping if "," in line)
             cores_physical = len(unique) or 0
         except Exception:
             cores_physical = 0
 
-    # A tiny SIMD hint set (best-effort, optional)
     simd = []
     if sysname == "Linux":
         flags = _run("grep -m1 'flags' /proc/cpuinfo | cut -d: -f2")
@@ -177,7 +169,6 @@ def _cpu_block():
         for x in ("AVX512F", "AVX2", "AVX", "FMA", "SSE4_2", "NEON", "SVE"):
             if x in feats:
                 simd.append(x)
-    # On Windows, skip flags — brand typically suffices for MSVC /arch choice.
 
     return {
         "brand": brand.strip(),
@@ -202,18 +193,15 @@ def _toolchain_block():
     gpp = ver_line("g++")
     clang = ver_line("clang")
 
-    # MSVC cl (only available inside proper dev shell; handle gracefully)
     msvc_cl = ""
     cl_path = _which("cl")
     if cl_path:
         msvc_cl = _first_line(_run("cl 2>&1"))
 
-    # Build tools (presence + short version line)
     cmake = ver_line("cmake")
     ninja = _first_line(_run([_which("ninja"), "--version"])) if _which("ninja") else ""
     make = ver_line("make")
 
-    # Linker (we only care if lld is available)
     lld = ver_line("ld.lld")
     return {
         "compilers": {"gcc": gcc, "g++": gpp, "clang": clang, "msvc_cl": msvc_cl},
@@ -243,14 +231,7 @@ def retrieve_system_info():
 
 def rust_toolchain_info():
     """
-    Return a dict with Rust-related settings:
-      - presence and paths for rustc / cargo / rustup / rust-analyzer
-      - versions
-      - active/default toolchain (if rustup is present)
-      - installed targets
-      - common env vars (CARGO_HOME, RUSTUP_HOME, RUSTFLAGS, CARGO_BUILD_TARGET)
-      - simple execution examples
-    Works on Windows, macOS, and Linux. Uses the existing helpers: _run, _which, _first_line.
+    Return a dict with Rust-related settings.
     """
     info = {
         "installed": False,
@@ -274,7 +255,6 @@ def rust_toolchain_info():
         "execution_examples": [],
     }
 
-    # Paths
     rustc_path = _which("rustc")
     cargo_path = _which("cargo")
     rustup_path = _which("rustup")
@@ -285,7 +265,6 @@ def rust_toolchain_info():
     info["rustup"]["path"] = rustup_path or ""
     info["rust_analyzer"]["path"] = ra_path or ""
 
-    # Versions & verbose details
     if rustc_path:
         ver_line = _first_line(_run([rustc_path, "--version"]))
         info["rustc"]["version"] = ver_line
@@ -307,12 +286,9 @@ def rust_toolchain_info():
 
     if rustup_path:
         info["rustup"]["version"] = _first_line(_run([rustup_path, "--version"]))
-        # Active toolchain
         active = _first_line(_run([rustup_path, "show", "active-toolchain"]))
         info["rustup"]["active_toolchain"] = active
 
-        # Default toolchain (best effort)
-        # Try parsing `rustup toolchain list` and pick the line with "(default)"
         tlist = _run([rustup_path, "toolchain", "list"]).splitlines()
         info["rustup"]["toolchains"] = [t.strip() for t in tlist if t.strip()]
         default_tc = ""
@@ -321,18 +297,15 @@ def rust_toolchain_info():
                 default_tc = line.strip()
                 break
         if not default_tc:
-            # Fallback: sometimes `rustup show` includes "default toolchain: ..."
             for line in _run([rustup_path, "show"]).splitlines():
                 if "default toolchain:" in line:
                     default_tc = line.split(":", 1)[1].strip()
                     break
         info["rustup"]["default_toolchain"] = default_tc
 
-        # Installed targets
         targets = _run([rustup_path, "target", "list", "--installed"]).split()
         info["rustup"]["targets_installed"] = targets
 
-    # Execution examples (only include what will work on this system)
     exec_examples = []
     if cargo_path:
         exec_examples.append(f'"{cargo_path}" build')
@@ -342,10 +315,8 @@ def rust_toolchain_info():
         exec_examples.append(f'"{rustc_path}" hello.rs -o hello')
     info["execution_examples"] = exec_examples
 
-    # Installed?
     info["installed"] = bool(rustc_path or cargo_path or rustup_path)
 
-    # Fill in default homes if env vars are empty but typical locations exist
     def _maybe_default_home(env_val, default_basename):
         if env_val:
             return env_val
