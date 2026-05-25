@@ -1,5 +1,6 @@
 import sys
 import math
+import time
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 from litellm import completion
@@ -228,6 +229,9 @@ def evaluate_all_answers():
     for index, test in enumerate(tests):
         result = evaluate_answer(test)[0]
         progress = (index + 1) / total_tests
+
+        time.sleep(5)  # Add delay to avoid rate limits during testing - adjust as needed
+
         yield test, result, progress
 
 
