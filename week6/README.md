@@ -179,9 +179,6 @@ week6/
 │
 ├── human_in.csv, human_out.csv     # Test products & human price estimates
 │
-├── community-contributions/        # 100+ student submissions & alternate solutions
-│                                   # (extras, fine-tuning examples, experiments)
-│
 └── README.md                       # This file
 ```
 
